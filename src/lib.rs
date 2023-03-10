@@ -62,19 +62,17 @@ pub fn run(config: Config) -> MyResult<()> {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
             Ok(file) => {
                 let lines = BufReader::new(file).lines();
-                let mut counter = 1;
-                for line in lines {
+                let mut last_num = 0;
+                for (line_number, line) in lines.enumerate() {
                     let line = line?;
                     if config.number_lines {
-                        println!("     {}	{}", counter, line);
-                        counter = counter + 1;
+                        println!("{:>6}\t{}", line_number + 1, line);
                     } else if config.number_nonblank_lines {
                         if line.is_empty() {
-                            println!("{}",line);
-                            
+                            println!();
                         } else {
-                            println!("     {}	{}", counter, line);
-                            counter = counter + 1;
+                            last_num += 1;
+                            println!("{:>6}\t{}", last_num, line);
                         }
                     } else {
                         println!("{}",line);
